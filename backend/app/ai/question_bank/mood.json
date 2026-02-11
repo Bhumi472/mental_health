@@ -1,0 +1,260 @@
+{
+  "test_type": "mood",
+  "version": "1.1",
+  "questions": [
+    {
+      "id": "M1",
+      "text": "During the past month, have you often been bothered by feeling down, depressed, or hopeless?",
+      "tags": [
+        "core",
+        "depression"
+      ],
+      "options": [
+        "Not at all",
+        "Several days",
+        "More than half the days",
+        "Nearly every day"
+      ],
+      "severity_map": {
+        "Not at all": 0,
+        "Several days": 1,
+        "More than half the days": 2,
+        "Nearly every day": 3
+      },
+      "next": {
+        "low": "M2",
+        "medium": "M3",
+        "high": "M4"
+      }
+    },
+    {
+      "id": "M2",
+      "text": "During the past month, have you often been bothered by little interest or pleasure in doing things?",
+      "tags": [
+        "anhedonia"
+      ],
+      "options": [
+        "Not at all",
+        "Several days",
+        "More than half the days",
+        "Nearly every day"
+      ],
+      "severity_map": {
+        "Not at all": 0,
+        "Several days": 1,
+        "More than half the days": 2,
+        "Nearly every day": 3
+      },
+      "next": {
+        "low": "M5",
+        "medium": "M3",
+        "high": "M4"
+      }
+    },
+    {
+      "id": "M3",
+      "text": "How often have you felt that you have nothing to look forward to?",
+      "tags": [
+        "hopelessness"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "M5",
+        "medium": "M6",
+        "high": "M4"
+      }
+    },
+    {
+      "id": "M4",
+      "text": "Do you feel like you're moving or speaking so slowly that other people could have noticed?",
+      "tags": [
+        "psychomotor_retardation"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Almost Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Almost Always": 4
+      },
+      "next": {
+        "low": "M6",
+        "medium": "M6",
+        "high": "M7"
+      }
+    },
+    {
+      "id": "M5",
+      "text": "Do you feel like you have been a failure or let your family/yourself down?",
+      "tags": [
+        "guilt"
+      ],
+      "options": [
+        "Not at all",
+        "Several days",
+        "More than half the days",
+        "Nearly every day"
+      ],
+      "severity_map": {
+        "Not at all": 0,
+        "Several days": 1,
+        "More than half the days": 2,
+        "Nearly every day": 3
+      },
+      "next": {
+        "low": "M8",
+        "medium": "M6",
+        "high": "M7"
+      }
+    },
+    {
+      "id": "M6",
+      "text": "Have you had trouble concentrating on things, such as reading the newspaper or watching television?",
+      "tags": [
+        "cognitive"
+      ],
+      "options": [
+        "Not at all",
+        "Several days",
+        "More than half the days",
+        "Nearly every day"
+      ],
+      "severity_map": {
+        "Not at all": 0,
+        "Several days": 1,
+        "More than half the days": 2,
+        "Nearly every day": 3
+      },
+      "next": {
+        "low": "M8",
+        "medium": "M9",
+        "high": "M7"
+      }
+    },
+    {
+      "id": "M7",
+      "text": "How often do you feel that your life is empty?",
+      "tags": [
+        "emptiness"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "M8",
+        "medium": "M9",
+        "high": "M10"
+      }
+    },
+    {
+      "id": "M8",
+      "text": "Do you feel you have a lot of energy to do things?",
+      "tags": [
+        "energy"
+      ],
+      "options": [
+        "Always",
+        "Often",
+        "Sometimes",
+        "Rarely",
+        "Never"
+      ],
+      "severity_map": {
+        "Always": 0,
+        "Often": 1,
+        "Sometimes": 2,
+        "Rarely": 3,
+        "Never": 4
+      },
+      "next": {
+        "low": "M9",
+        "medium": "M9",
+        "high": "M10"
+      }
+    },
+    {
+      "id": "M9",
+      "text": "Do you find yourself more irritable or crying more than usual?",
+      "tags": [
+        "irritability",
+        "emotionality"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "M10",
+        "medium": "M10",
+        "high": "M10"
+      }
+    },
+    {
+      "id": "M10",
+      "text": "Compared to 1 month ago, how would you rate your general mood today?",
+      "tags": [
+        "global"
+      ],
+      "options": [
+        "Much better",
+        "Slightly better",
+        "The same",
+        "Slightly worse",
+        "Much worse"
+      ],
+      "severity_map": {
+        "Much better": 0,
+        "Slightly better": 1,
+        "The same": 2,
+        "Slightly worse": 3,
+        "Much worse": 5
+      },
+      "next": {
+        "low": "END",
+        "medium": "END",
+        "high": "END"
+      }
+    }
+  ]
+}

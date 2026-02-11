@@ -1,0 +1,268 @@
+{
+  "test_type": "stress",
+  "version": "1.1",
+  "questions": [
+    {
+      "id": "S1",
+      "text": "In the last month, how often have you been upset because of something that happened unexpectedly?",
+      "tags": [
+        "unexpected",
+        "control"
+      ],
+      "options": [
+        "Never",
+        "Almost Never",
+        "Sometimes",
+        "Fairly Often",
+        "Very Often"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Almost Never": 1,
+        "Sometimes": 2,
+        "Fairly Often": 3,
+        "Very Often": 4
+      },
+      "next": {
+        "low": "S2",
+        "medium": "S3",
+        "high": "S4"
+      }
+    },
+    {
+      "id": "S2",
+      "text": "How often have you felt that you were unable to control the important things in your life?",
+      "tags": [
+        "control"
+      ],
+      "options": [
+        "Never",
+        "Almost Never",
+        "Sometimes",
+        "Fairly Often",
+        "Very Often"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Almost Never": 1,
+        "Sometimes": 2,
+        "Fairly Often": 3,
+        "Very Often": 4
+      },
+      "next": {
+        "low": "S5",
+        "medium": "S3",
+        "high": "S4"
+      }
+    },
+    {
+      "id": "S3",
+      "text": "The pressure of daily tasks feels like a burden you can't carry.",
+      "tags": [
+        "burden"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "S5",
+        "medium": "S6",
+        "high": "S4"
+      }
+    },
+    {
+      "id": "S4",
+      "text": "How often have you felt nervous and stressed?",
+      "tags": [
+        "nervousness"
+      ],
+      "options": [
+        "Never",
+        "Almost Never",
+        "Sometimes",
+        "Fairly Often",
+        "Very Often"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Almost Never": 1,
+        "Sometimes": 2,
+        "Fairly Often": 3,
+        "Very Often": 4
+      },
+      "next": {
+        "low": "S6",
+        "medium": "S6",
+        "high": "S7"
+      }
+    },
+    {
+      "id": "S5",
+      "text": "How often have you felt confident about your ability to handle your personal problems?",
+      "tags": [
+        "confidence",
+        "resilience"
+      ],
+      "options": [
+        "Very Often",
+        "Fairly Often",
+        "Sometimes",
+        "Almost Never",
+        "Never"
+      ],
+      "severity_map": {
+        "Very Often": 0,
+        "Fairly Often": 1,
+        "Sometimes": 2,
+        "Almost Never": 3,
+        "Never": 4
+      },
+      "next": {
+        "low": "S8",
+        "medium": "S6",
+        "high": "S7"
+      }
+    },
+    {
+      "id": "S6",
+      "text": "How often have you felt that things were going your way?",
+      "tags": [
+        "optimism"
+      ],
+      "options": [
+        "Very Often",
+        "Fairly Often",
+        "Sometimes",
+        "Almost Never",
+        "Never"
+      ],
+      "severity_map": {
+        "Very Often": 0,
+        "Fairly Often": 1,
+        "Sometimes": 2,
+        "Almost Never": 3,
+        "Never": 4
+      },
+      "next": {
+        "low": "S8",
+        "medium": "S9",
+        "high": "S7"
+      }
+    },
+    {
+      "id": "S7",
+      "text": "How often have you been able to control irritations in your life?",
+      "tags": [
+        "irritation"
+      ],
+      "options": [
+        "Very Often",
+        "Fairly Often",
+        "Sometimes",
+        "Almost Never",
+        "Never"
+      ],
+      "severity_map": {
+        "Very Often": 0,
+        "Fairly Often": 1,
+        "Sometimes": 2,
+        "Almost Never": 3,
+        "Never": 4
+      },
+      "next": {
+        "low": "S8",
+        "medium": "S9",
+        "high": "S10"
+      }
+    },
+    {
+      "id": "S8",
+      "text": "How often have you felt that you were on top of things?",
+      "tags": [
+        "coping"
+      ],
+      "options": [
+        "Very Often",
+        "Fairly Often",
+        "Sometimes",
+        "Almost Never",
+        "Never"
+      ],
+      "severity_map": {
+        "Very Often": 0,
+        "Fairly Often": 1,
+        "Sometimes": 2,
+        "Almost Never": 3,
+        "Never": 4
+      },
+      "next": {
+        "low": "S9",
+        "medium": "S9",
+        "high": "S10"
+      }
+    },
+    {
+      "id": "S9",
+      "text": "How often have you been angered because of things that were outside of your control?",
+      "tags": [
+        "anger"
+      ],
+      "options": [
+        "Never",
+        "Almost Never",
+        "Sometimes",
+        "Fairly Often",
+        "Very Often"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Almost Never": 1,
+        "Sometimes": 2,
+        "Fairly Often": 3,
+        "Very Often": 4
+      },
+      "next": {
+        "low": "S10",
+        "medium": "S10",
+        "high": "S10"
+      }
+    },
+    {
+      "id": "S10",
+      "text": "How often have you felt difficulties were piling up so high that you could not overcome them?",
+      "tags": [
+        "overwhelmed"
+      ],
+      "options": [
+        "Never",
+        "Almost Never",
+        "Sometimes",
+        "Fairly Often",
+        "Very Often"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Almost Never": 1,
+        "Sometimes": 2,
+        "Fairly Often": 3,
+        "Very Often": 4
+      },
+      "next": {
+        "low": "END",
+        "medium": "END",
+        "high": "END"
+      }
+    }
+  ]
+}

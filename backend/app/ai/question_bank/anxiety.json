@@ -1,0 +1,91 @@
+{
+  "test_type": "anxiety",
+  "version": "1.1",
+  "questions": [
+    {
+      "id": "A1",
+      "text": "Over the last 2 weeks, how often have you been bothered by feeling nervous, anxious, or on edge?",
+      "tags": ["core", "gad7"],
+      "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+      "severity_map": {
+        "Not at all": 0,
+        "Several days": 1,
+        "More than half the days": 2,
+        "Nearly every day": 3
+      },
+      "next": { "low": "A2", "medium": "A3", "high": "A4" }
+    },
+    {
+      "id": "A2",
+      "text": "Do you often feel a sense of dread as if something bad is about to happen?",
+      "tags": ["anticipatory"],
+      "options": ["Never", "Rarely", "Sometimes", "Often", "Always"],
+      "severity_map": { "Never": 0, "Rarely": 1, "Sometimes": 2, "Often": 3, "Always": 4 },
+      "next": { "low": "A5", "medium": "A3", "high": "A4" }
+    },
+    {
+      "id": "A3",
+      "text": "How much do your worries interfere with your sleep?",
+      "tags": ["sleep", "impact"],
+      "options": ["Not at all", "A little", "Somewhat", "A lot", "Extremely"],
+      "severity_map": { "Not at all": 0, "A little": 1, "Somewhat": 2, "A lot": 3, "Extremely": 4 },
+      "next": { "low": "A5", "medium": "A6", "high": "A7" }
+    },
+    {
+      "id": "A4",
+      "text": "Have you experienced sudden surges of intense fear or panic in the last month?",
+      "tags": ["panic"],
+      "options": ["Never", "Once or twice", "Weekly", "Several times a week", "Daily"],
+      "severity_map": { "Never": 0, "Once or twice": 1, "Weekly": 2, "Several times a week": 3, "Daily": 4 },
+      "next": { "low": "A6", "medium": "A7", "high": "A8" }
+    },
+    {
+      "id": "A5",
+      "text": "Do you find it difficult to stop or control worrying once it starts?",
+      "tags": ["control"],
+      "options": ["Not difficult", "Somewhat difficult", "Very difficult", "Impossible"],
+      "severity_map": { "Not difficult": 0, "Somewhat difficult": 1, "Very difficult": 2, "Impossible": 3 },
+      "next": { "low": "A9", "medium": "A6", "high": "A7" }
+    },
+    {
+      "id": "A6",
+      "text": "How often do you feel restless or find it hard to sit still?",
+      "tags": ["psychomotor"],
+      "options": ["Never", "Rarely", "Sometimes", "Often", "Always"],
+      "severity_map": { "Never": 0, "Rarely": 1, "Sometimes": 2, "Often": 3, "Always": 4 },
+      "next": { "low": "A9", "medium": "A10", "high": "A7" }
+    },
+    {
+      "id": "A7",
+      "text": "Do you experience physical tension, such as a tight chest or muscle aches, when worried?",
+      "tags": ["somatic"],
+      "options": ["Never", "Rarely", "Sometimes", "Often", "Always"],
+      "severity_map": { "Never": 0, "Rarely": 1, "Sometimes": 2, "Often": 3, "Always": 4 },
+      "next": { "low": "A10", "medium": "A8", "high": "A8" }
+    },
+    {
+      "id": "A8",
+      "text": "How often do you avoid social situations because you're afraid of being judged or feeling anxious?",
+      "tags": ["avoidance", "social"],
+      "options": ["Never", "Rarely", "Sometimes", "Often", "Always"],
+      "severity_map": { "Never": 0, "Rarely": 1, "Sometimes": 2, "Often": 3, "Always": 4 },
+      "next": { "low": "A10", "medium": "A10", "high": "A10" }
+    },
+    {
+      "id": "A9",
+      "text": "Do you feel like you're constantly on high alert, waiting for something wrong to happen?",
+      "tags": ["hypervigilance"],
+      "options": ["Never", "Rarely", "Sometimes", "Often", "Always"],
+      "severity_map": { "Never": 0, "Rarely": 1, "Sometimes": 2, "Often": 3, "Always": 4 },
+      "next": { "low": "END", "medium": "A10", "high": "A10" }
+    },
+    {
+      "id": "A10",
+      "text": "Overall, how much have these feelings affected your ability to function at work or home?",
+      "tags": ["global_impact"],
+      "options": ["Not at all", "Somewhat", "Significantly", "Severely"],
+      "severity_map": { "Not at all": 0, "Somewhat": 2, "Significantly": 5, "Severely": 10 },
+      "next": { "low": "END", "medium": "END", "high": "END" }
+    }
+  ]
+}

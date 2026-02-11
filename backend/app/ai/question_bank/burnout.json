@@ -1,0 +1,270 @@
+{
+  "test_type": "burnout",
+  "version": "1.1",
+  "questions": [
+    {
+      "id": "B1",
+      "text": "How often do you feel emotionally exhausted by your work or daily responsibilities?",
+      "tags": [
+        "exhaustion"
+      ],
+      "options": [
+        "Never",
+        "A few times a year",
+        "Once a month",
+        "A few times a month",
+        "Once a week",
+        "A few times a week",
+        "Every day"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "A few times a year": 1,
+        "Once a month": 1,
+        "A few times a month": 2,
+        "Once a week": 3,
+        "A few times a week": 4,
+        "Every day": 5
+      },
+      "next": {
+        "low": "B2",
+        "medium": "B3",
+        "high": "B4"
+      }
+    },
+    {
+      "id": "B2",
+      "text": "Do you feel used up at the end of the day?",
+      "tags": [
+        "fatigue"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "B5",
+        "medium": "B3",
+        "high": "B4"
+      }
+    },
+    {
+      "id": "B3",
+      "text": "How often do you feel fatigued when you get up in the morning and have to face another day on the job?",
+      "tags": [
+        "morning_dread"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "B5",
+        "medium": "B6",
+        "high": "B4"
+      }
+    },
+    {
+      "id": "B4",
+      "text": "Working all day is really a strain for you.",
+      "tags": [
+        "strain"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "B6",
+        "medium": "B6",
+        "high": "B7"
+      }
+    },
+    {
+      "id": "B5",
+      "text": "How often do you feel burned out from your work/routine?",
+      "tags": [
+        "self_perceived"
+      ],
+      "options": [
+        "Never",
+        "Rarely",
+        "Sometimes",
+        "Often",
+        "Always"
+      ],
+      "severity_map": {
+        "Never": 0,
+        "Rarely": 1,
+        "Sometimes": 2,
+        "Often": 3,
+        "Always": 4
+      },
+      "next": {
+        "low": "B8",
+        "medium": "B6",
+        "high": "B7"
+      }
+    },
+    {
+      "id": "B6",
+      "text": "I have become less interested in my work since I started this job.",
+      "tags": [
+        "cynicism"
+      ],
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "severity_map": {
+        "Strongly Disagree": 0,
+        "Disagree": 1,
+        "Neutral": 2,
+        "Agree": 3,
+        "Strongly Agree": 4
+      },
+      "next": {
+        "low": "B8",
+        "medium": "B9",
+        "high": "B7"
+      }
+    },
+    {
+      "id": "B7",
+      "text": "I have become more cynical about whether my work contributes anything.",
+      "tags": [
+        "cynicism"
+      ],
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "severity_map": {
+        "Strongly Disagree": 0,
+        "Disagree": 1,
+        "Neutral": 2,
+        "Agree": 3,
+        "Strongly Agree": 4
+      },
+      "next": {
+        "low": "B8",
+        "medium": "B9",
+        "high": "B10"
+      }
+    },
+    {
+      "id": "B8",
+      "text": "I just want to do my job and not be bothered.",
+      "tags": [
+        "detachment"
+      ],
+      "options": [
+        "Strongly Disagree",
+        "Disagree",
+        "Neutral",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "severity_map": {
+        "Strongly Disagree": 0,
+        "Disagree": 1,
+        "Neutral": 2,
+        "Agree": 3,
+        "Strongly Agree": 4
+      },
+      "next": {
+        "low": "B9",
+        "medium": "B9",
+        "high": "B10"
+      }
+    },
+    {
+      "id": "B9",
+      "text": "I feel I am making an effective contribution to what this organization/family does.",
+      "tags": [
+        "efficacy"
+      ],
+      "options": [
+        "Strongly Agree",
+        "Agree",
+        "Neutral",
+        "Disagree",
+        "Strongly Disagree"
+      ],
+      "severity_map": {
+        "Strongly Agree": 0,
+        "Agree": 1,
+        "Neutral": 2,
+        "Disagree": 3,
+        "Strongly Disagree": 4
+      },
+      "next": {
+        "low": "B10",
+        "medium": "B10",
+        "high": "B10"
+      }
+    },
+    {
+      "id": "B10",
+      "text": "In my opinion, I am good at my job/daily tasks.",
+      "tags": [
+        "efficacy"
+      ],
+      "options": [
+        "Strongly Agree",
+        "Agree",
+        "Neutral",
+        "Disagree",
+        "Strongly Disagree"
+      ],
+      "severity_map": {
+        "Strongly Agree": 0,
+        "Agree": 1,
+        "Neutral": 2,
+        "Disagree": 3,
+        "Strongly Disagree": 4
+      },
+      "next": {
+        "low": "END",
+        "medium": "END",
+        "high": "END"
+      }
+    }
+  ]
+}
