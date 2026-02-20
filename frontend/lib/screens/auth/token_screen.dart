@@ -20,6 +20,11 @@ class _TokenScreenState extends State<TokenScreen> {
   Widget build(BuildContext context) {
     final signupProvider = Provider.of<SignupProvider>(context);
     final lp = Provider.of<LanguageProvider>(context);
+    final isIndividual = signupProvider.userType == 'individual';
+    final title = isIndividual ? "Enter group token" : "Create your group token";
+    final subtitle = isIndividual 
+        ? "This was provided by your organization or family admin" 
+        : "Members will use this code to join your group";
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4EB),
@@ -67,20 +72,20 @@ class _TokenScreenState extends State<TokenScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            const Text(
-              "Enter your group token",
+            Text(
+              title,
               style: AppTextStyles.heading,
             ),
             const SizedBox(height: 10),
-            const Text(
-              "This was provided by your organization admin",
+            Text(
+              subtitle,
               style: AppTextStyles.subHeading,
             ),
             const SizedBox(height: 40),
             TextField(
               controller: _tokenController,
               decoration: InputDecoration(
-                hintText: "Enter token code",
+                hintText: isIndividual ? "Enter token code" : "Choose a unique token code (e.g. FAMILY123)",
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -95,30 +100,36 @@ class _TokenScreenState extends State<TokenScreen> {
               },
             ),
             const SizedBox(height: 20),
-            Center(
-              child: GestureDetector(
-                onTap: () {}, // Link to support
-                child: RichText(
-                  text: TextSpan(
-                    text: "Don't have a token? ",
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                    children: [
-                      TextSpan(
-                        text: "Contact support",
-                        style: TextStyle(color: Colors.orange[400], fontWeight: FontWeight.bold),
-                      ),
-                    ],
+            if (isIndividual)
+              Center(
+                child: GestureDetector(
+                  onTap: () {}, // Link to support
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Don't have a token? ",
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                      children: [
+                        TextSpan(
+                          text: "Contact support",
+                          style: TextStyle(color: Colors.orange[400], fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              )
+            else
+              const Text(
+                "Tip: Keep it short and memorable. You can share this with your group members anytime.",
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13, fontStyle: FontStyle.italic),
               ),
-            ),
             const Spacer(),
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 text: lp.translate('next'),
                 icon: Icons.chevron_right,
-                onPressed: _tokenController.text.isEmpty 
+                onPressed: _tokenController.text.length < 3
                   ? null 
                   : () => Navigator.pushNamed(context, '/language'),
               ),
@@ -128,5 +139,6 @@ class _TokenScreenState extends State<TokenScreen> {
         ),
       ),
     );
+
   }
 }

@@ -9,7 +9,7 @@ import 'auth_service.dart'; // Assuming we can get the token here or via a share
 class TestApiService {
   static String get baseUrl {
     if (kIsWeb) {
-      return "http://localhost:8000";
+      return "http://127.0.0.1:8000";
     }
     return "http://10.0.2.2:8000";
   }
@@ -102,5 +102,22 @@ class TestApiService {
     // This is problematic now because the new flow is question by question.
     // I will refactor the dynamic test screen to use the new methods.
     throw UnimplementedError("Use startAssessment instead");
+  }
+
+  static Future<List<dynamic>> getAssessmentHistory() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/assessment/history'),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load assessment history: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error loading assessment history: $e');
+    }
   }
 }

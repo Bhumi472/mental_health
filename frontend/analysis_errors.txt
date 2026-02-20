@@ -1,0 +1,17 @@
+﻿Analyzing MentalHealthAI...                                     
+
+warning - Unused import: 'package:flame/events.dart' - lib\game\marble_jar_game.dart:1:8 - unused_import
+   info - The import of 'package:flame/game.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flame/components.dart' - lib\game\marble_jar_game.dart:2:8 - unnecessary_import
+warning - Unused import: '../constants/home_theme.dart' - lib\game\marble_jar_game.dart:9:8 - unused_import
+   info - The private field _gravity could be 'final' - lib\game\marble_jar_game.dart:20:11 - prefer_final_fields
+warning - The value of the field '_gravity' isn't used - lib\game\marble_jar_game.dart:20:11 - unused_field
+  error - The named parameter 'position' isn't defined - lib\game\marble_jar_game.dart:41:24 - undefined_named_parameter
+warning - The value of the local variable 'paint' isn't used - lib\game\marble_jar_game.dart:113:11 - unused_local_variable
+  error - The named parameter 'restitution' isn't defined - lib\game\marble_jar_game.dart:180:7 - undefined_named_parameter
+  error - The named parameter 'friction' isn't defined - lib\game\marble_jar_game.dart:181:7 - undefined_named_parameter
+  error - The named parameter 'density' isn't defined - lib\game\marble_jar_game.dart:182:7 - undefined_named_parameter
+  error - A value of type 'Vector2 Function()' can't be assigned to a variable of type 'Vector2' - lib\game\marble_jar_game.dart:193:35 - invalid_assignment
+  error - The argument type 'Vector2 Function()' can't be assigned to the parameter type 'Vector2'.  - lib\game\marble_jar_game.dart:197:54 - argument_type_not_assignable
+  error - A value of type 'Vector2 Function()' can't be assigned to a variable of type 'Vector2' - lib\game\marble_jar_game.dart:212:29 - invalid_assignment
+  error - A value of type 'Vector2 Function()' can't be assigned to a variable of type 'Vector2' - lib\game\marble_jar_game.dart:221:29 - invalid_assignment
+

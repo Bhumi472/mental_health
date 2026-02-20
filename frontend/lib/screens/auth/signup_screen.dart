@@ -18,6 +18,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _orgNameController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -97,6 +98,13 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 20),
               _buildTextField(controller: _fullNameController, hint: "Full Name"),
               const SizedBox(height: 16),
+              if (signupProvider.userType != 'individual') ...[
+                _buildTextField(
+                  controller: _orgNameController, 
+                  hint: signupProvider.userType == 'family' ? "Family Name" : "Organization Name",
+                ),
+                const SizedBox(height: 16),
+              ],
               _buildTextField(controller: _usernameController, hint: "@username"),
               const SizedBox(height: 16),
               _buildDropdownField(),
@@ -242,28 +250,43 @@ class _SignupScreenState extends State<SignupScreen> {
       final signupProvider = Provider.of<SignupProvider>(context, listen: false);
       final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
 
-      final response = await AuthService.signupIndividual(
-        username: _usernameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-        firstName: firstName,
-        lastName: lastName,
-        dateOfBirth: DateTime.now().subtract(const Duration(days: 365 * 25)), // Defaulting for now
-        city: _cityController.text,
-        language: languageProvider.currentLanguage,
-        termsAccepted: _agreedToTerms,
-        privacyAccepted: _agreedToTerms, // Assuming one checkbox covers both as per UI
-      );
+      Map<String, dynamic> response;
+      if (signupProvider.userType == 'individual') {
+        response = await AuthService.signupIndividual(
+          username: _usernameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          firstName: firstName,
+          lastName: lastName,
+          dateOfBirth: DateTime.now().subtract(const Duration(days: 365 * 25)), 
+          city: _cityController.text,
+          language: languageProvider.currentLanguage,
+          termsAccepted: _agreedToTerms,
+          privacyAccepted: _agreedToTerms,
+          organizationToken: signupProvider.token.isNotEmpty ? signupProvider.token : null,
+        );
+      } else {
+        response = await AuthService.signupOrganization(
+          accountType: signupProvider.userType,
+          username: _usernameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          organizationName: _orgNameController.text.isNotEmpty ? _orgNameController.text : (signupProvider.userType == 'family' ? "Family Group" : "Organization Group"),
+          organizationToken: signupProvider.token,
+          ageGroup: _selectedAgeGroup ?? '18_25',
+          language: languageProvider.currentLanguage,
+          termsAccepted: _agreedToTerms,
+          privacyAccepted: _agreedToTerms,
+        );
+      }
 
       if (response.containsKey('error')) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['error'])),
         );
       } else {
-        final userId = response['user']?['id'] ?? 'Unknown';
-        print("✅ User created with ID: $userId");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Account created successfully! ID: $userId")),
+          const SnackBar(content: Text("Account created successfully!")),
         );
         Navigator.pushReplacementNamed(context, '/login');
       }

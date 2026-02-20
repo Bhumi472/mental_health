@@ -1,449 +1,516 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
-import '../../constants/app_text_styles.dart';
-import '../../widgets/app_button.dart';
+import 'dart:async'; // Added for Timer
+import 'package:google_fonts/google_fonts.dart'; // Added for fonts
 
-class Landing1 extends StatelessWidget {
+// Theme constants
+class AppTheme {
+  static const borderRadius = 16.0;
+  static const effects = AppEffects();
+}
+
+class AppColors {
+  const AppColors._();
+  static const Color primary = Color(0xFF6366F1);
+}
+
+class AppShadows {
+  const AppShadows._();
+
+  static const BoxShadow glow = BoxShadow(
+    color: Color.fromRGBO(99, 102, 241, 0.4),
+    blurRadius: 24,
+    spreadRadius: 0,
+  );
+
+  static const BoxShadow soft = BoxShadow(
+    color: Color.fromRGBO(0, 0, 0, 0.1),
+    blurRadius: 8,
+    spreadRadius: 0,
+  );
+
+  static const BoxShadow card = BoxShadow(
+    color: Color.fromRGBO(0, 0, 0, 0.08),
+    blurRadius: 12,
+    spreadRadius: 0,
+  );
+
+  static const BoxShadow innerGlow = BoxShadow(
+    color: Color.fromRGBO(99, 102, 241, 0.3),
+    blurRadius: 16,
+    spreadRadius: 0,
+  );
+}
+
+class AppGradients {
+  const AppGradients._();
+
+  static const LinearGradient ocean = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+  );
+
+  static const LinearGradient forest = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF11998E), Color(0xFF38EF7D)],
+  );
+
+  static const LinearGradient sunset = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF38EF7D), Color(0xFFFF5858)],
+  );
+
+  static const LinearGradient peace = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF4FACFE), Color(0xFF00F2FE)],
+  );
+
+  static const LinearGradient primaryGlow = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+  );
+}
+
+class AppEffects {
+  const AppEffects();
+
+  BoxDecoration get glassCard => BoxDecoration(
+        color: Colors.white.withAlpha(51), // 20% opacity
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(
+          color: Colors.white.withAlpha(77), // 30% opacity
+          width: 1,
+        ),
+        backgroundBlendMode: BlendMode.overlay,
+      );
+
+  BoxDecoration get glass => BoxDecoration(
+        color: Colors.white.withAlpha(38), // 15% opacity
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        border: Border.all(
+          color: Colors.white.withAlpha(51), // 20% opacity
+          width: 1,
+        ),
+      );
+}
+
+// Onboarding slide model
+class OnboardingSlide {
+  final String title;
+  final String description;
+  final LinearGradient gradient;
+  final String imagePath;
+
+  const OnboardingSlide({
+    required this.title,
+    required this.description,
+    required this.gradient,
+    required this.imagePath,
+  });
+}
+
+class Landing1 extends StatefulWidget {
   const Landing1({super.key});
+
+  @override
+  State<Landing1> createState() => _Landing1State();
+}
+
+class _Landing1State extends State<Landing1> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  Timer? _autoAdvanceTimer;
+
+  // New Gradients as per request
+  static const List<LinearGradient> _gradients = [
+    LinearGradient( // Welcome page
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF6B9BD1), Color(0xFFA8C5A5)],
+    ),
+    LinearGradient( // Understand yourself better
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFA5C3A8), Color(0xFFF4A59C)],
+    ),
+    LinearGradient( // Evidence based exercises
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFECA89D), Color(0xFF6B9BD1)],
+    ),
+    LinearGradient( // You're not alone
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF719CCF), Color(0xFFB0C8A0)],
+    ),
+  ];
+
+  final List<OnboardingSlide> onboardingSlides = const [
+    OnboardingSlide(
+      title: "Welcome to MindfulCare",
+      description: "Your personalized mental health companion",
+      gradient: AppGradients.ocean, // Overridden by _gradients[index]
+      imagePath: 'assets/images/Baseline welcome.png', // Fixed path
+    ),
+    OnboardingSlide(
+      title: "Understand Yourself Better",
+      description: "Take validated assessments to track your mental health",
+      gradient: AppGradients.forest,
+      imagePath: 'assets/images/Understand urself.png', // Corrected path
+    ),
+    OnboardingSlide(
+      title: "Evidence-Based Exercises",
+      description: "Access 12+ unique activities tailored to your needs",
+      gradient: AppGradients.sunset,
+      imagePath: 'assets/images/Evidence lp.png',
+    ),
+    OnboardingSlide(
+      title: "You're Not Alone",
+      description: "Connect with a supportive community",
+      gradient: AppGradients.peace,
+      imagePath: 'assets/images/Community lp.png',
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoAdvance();
+  }
+
+  void _startAutoAdvance() {
+    _autoAdvanceTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      
+      if (_pageController.hasClients && _currentPage < onboardingSlides.length - 1) {
+        try {
+          _pageController.nextPage(
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+          );
+        } catch (e) {
+          debugPrint("Error auto-advancing page: $e");
+          timer.cancel(); // Stop trying if it fails
+        }
+      } else {
+        // Loop back to start instead of stopping
+        _pageController.animateToPage(0, duration: const Duration(milliseconds: 800), curve: Curves.easeInOut);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _autoAdvanceTimer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF7AAAD8),
-              Color(0xFF9BC5C3),
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 800),
+        decoration: BoxDecoration(
+          gradient: _gradients[_currentPage],
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    // Dot Pattern
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.1,
+                        child: CustomPaint(painter: DotPatternPainter()),
+                      ),
+                    ),
+                    
+                    // PageView
+                    PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        setState(() => _currentPage = index);
+                      },
+                      itemCount: onboardingSlides.length,
+                      itemBuilder: (context, index) {
+                        final slide = onboardingSlides[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Image with Glass Effect
+                              Container(
+                                width: 200, // Increased size for impact
+                                height: 200,
+                                margin: const EdgeInsets.only(bottom: 40),
+                                padding: const EdgeInsets.all(20),
+                                decoration: AppTheme.effects.glassCard.copyWith(
+                                  boxShadow: [AppShadows.glow],
+                                ),
+                                child: Image.asset(
+                                  slide.imagePath,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 60, color: Colors.white),
+                                ),
+                              ),
+                              
+                              // Title
+                              Text(
+                                slide.title,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins( // Changed to Poppins for professional look
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold, // Added bold
+                                  color: Colors.white,
+                                  shadows: [
+                                    const Shadow(
+                                      color: Color.fromRGBO(0, 0, 0, 0.2),
+                                      blurRadius: 12,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Description
+                              Text(
+                                slide.description,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins( // Changed to Poppins for consistency
+                                  fontSize: 18,
+                                  color: Colors.white.withAlpha(242),
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              // Bottom Navigation
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column( // Changed to Column to center indicators above buttons
+                  children: [
+                   // Indicators (Center)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        onboardingSlides.length,
+                        (index) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 4), // Reduced margin
+                          width: _currentPage == index ? 24 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withAlpha(_currentPage == index ? 255 : 100),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Action Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Back Button
+                        if (_currentPage > 0)
+                          GestureDetector(
+                            onTap: () {
+                              _pageController.previousPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF5FC3B0), // Requested Back Color
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [AppShadows.card],
+                              ),
+                              child: const Text(
+                                'Back',
+                                style: TextStyle(
+                                  color: Colors.white, // White font
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                           const SizedBox(), // Spacer to keep layout balanced if needed, or just let SpaceBetween handle it
+
+                        // Next/Get Started Button
+                        GestureDetector(
+                          onTap: () {
+                            // As requested, Continue button now goes to Auth Choice page
+                            Navigator.pushNamed(context, '/auth-choice');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF6B9BD1), // Requested Continue Color
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [AppShadows.card],
+                            ),
+                            child: const Text(
+                              'Continue',
+                              style: TextStyle(
+                                color: Colors.white, // White font
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-        child: Column(
-          children: [
-            const Spacer(),
+      ),
+    );
+  }
+}
 
-            CircleAvatar(
-              radius: 70,
-              backgroundColor: Colors.white.withOpacity(0.3),
-              child: const Icon(
-                Icons.self_improvement,
-                size: 70,
-                color: Colors.white,
-              ),
+// Custom painter for dot pattern
+class DotPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withAlpha(38) // 15% opacity
+      ..style = PaintingStyle.fill;
+
+    const spacing = 40.0;
+    const dotRadius = 1.0;
+
+    for (double x = 2; x < size.width; x += spacing) {
+      for (double y = 2; y < size.height; y += spacing) {
+        canvas.drawCircle(Offset(x, y), dotRadius, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Reusable glass button widget
+class _GlassButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+
+  const _GlassButton({
+    required this.onPressed,
+    required this.child,
+  });
+
+  @override
+  State<_GlassButton> createState() => _GlassButtonState();
+}
+
+class _GlassButtonState extends State<_GlassButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          height: 52,
+          decoration: AppTheme.effects.glass.copyWith(
+            boxShadow: [AppShadows.card],
+          ),
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              color: AppColors.primary,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
-
-            const SizedBox(height: 30),
-
-            Text(
-              "Welcome to MindfulCare",
-              style: AppTextStyles.heading.copyWith(color: Colors.white),
+            child: IconTheme(
+              data: const IconThemeData(color: AppColors.primary),
+              child: Center(child: widget.child),
             ),
-
-            const SizedBox(height: 12),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Text(
-                "Your personalized mental health companion",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.subHeading.copyWith(
-                  color: Colors.white70,
-                ),
-              ),
-            ),
-
-            const Spacer(),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                _Dot(active: true),
-                _Dot(active: false),
-                _Dot(active: false),
-                _Dot(active: false),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  text: "Continue",
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/login');
-
-                  },
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 50),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _Dot extends StatelessWidget {
-  final bool active;
-  const _Dot({required this.active});
+// Reusable primary button widget
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+
+  const _PrimaryButton({
+    required this.onPressed,
+    required this.child,
+  });
+
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      width: active ? 16 : 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: active ? AppColors.primary : Colors.white54,
-        borderRadius: BorderRadius.circular(10),
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          height: 52,
+          decoration: BoxDecoration(
+            gradient: AppGradients.primaryGlow,
+            borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+            boxShadow: [AppShadows.innerGlow],
+          ),
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            child: IconTheme(
+              data: const IconThemeData(color: Colors.white),
+              child: Center(child: widget.child),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import '../../constants/app_colors.dart';
-// import '../../constants/app_text_styles.dart';
-// import '../../widgets/app_button.dart';
-// import '../../services/api_service.dart';
-// import '../../services/auth_service.dart';
-
-// class Landing1 extends StatefulWidget {
-//   const Landing1({super.key});
-
-//   @override
-//   State<Landing1> createState() => _Landing1State();
-// }
-
-// class _Landing1State extends State<Landing1> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         width: double.infinity,
-//         height: double.infinity,
-//         decoration: const BoxDecoration(
-//           gradient: LinearGradient(
-//             begin: Alignment.topLeft,
-//             end: Alignment.bottomRight,
-//             colors: [
-//               Color(0xFF7AAAD8),
-//               Color(0xFF9BC5C3),
-//             ],
-//           ),
-//         ),
-//         child: Column(
-//           children: [
-//             const Spacer(),
-
-//             CircleAvatar(
-//               radius: 70,
-//               backgroundColor: Colors.white.withOpacity(0.3),
-//               child: const Icon(
-//                 Icons.self_improvement,
-//                 size: 70,
-//                 color: Colors.white,
-//               ),
-//             ),
-
-//             const SizedBox(height: 30),
-
-//             Text(
-//               "Welcome to MindfulCare",
-//               style: AppTextStyles.heading.copyWith(color: Colors.white),
-//             ),
-
-//             const SizedBox(height: 12),
-
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 30),
-//               child: Text(
-//                 "Your personalized mental health companion",
-//                 textAlign: TextAlign.center,
-//                 style: AppTextStyles.subHeading.copyWith(
-//                   color: Colors.white70,
-//                 ),
-//               ),
-//             ),
-
-//             const Spacer(),
-
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 _dot(true),
-//                 _dot(false),
-//                 _dot(false),
-//                 _dot(false),
-//               ],
-//             ),
-
-//             const SizedBox(height: 20),
-
-//             // 🔘 Continue Button (NOW CONNECTED)
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 24),
-//               child: SizedBox(
-//                 width: double.infinity,
-//                 child: AppButton(
-//                   text: "Continue",
-//                   onPressed: () async {
-//                     await _testSignup();
-//                   },
-//                 ),
-//               ),
-//             ),
-
-//             // Additional test buttons for different methods
-//             const SizedBox(height: 10),
-            
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 24),
-//               child: SizedBox(
-//                 width: double.infinity,
-//                 child: ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.white.withOpacity(0.2),
-//                     foregroundColor: Colors.white,
-//                     padding: const EdgeInsets.symmetric(vertical: 16),
-//                   ),
-//                   onPressed: () async {
-//                     await _testSignupWithoutAge();
-//                   },
-//                   child: const Text("Test without age"),
-//                 ),
-//               ),
-//             ),
-
-//             const SizedBox(height: 10),
-            
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 24),
-//               child: SizedBox(
-//                 width: double.infinity,
-//                 child: ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.white.withOpacity(0.2),
-//                     foregroundColor: Colors.white,
-//                     padding: const EdgeInsets.symmetric(vertical: 16),
-//                   ),
-//                   onPressed: () async {
-//                     await _testLogin();
-//                   },
-//                   child: const Text("Test Login"),
-//                 ),
-//               ),
-//             ),
-
-//             const SizedBox(height: 40),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   // Test signup with all required fields
-//   Future<void> _testSignup() async {
-//     try {
-//       // Calculate date of birth from age (20 years old)
-//       final now = DateTime.now();
-//       final dateOfBirth = DateTime(now.year - 20, now.month, now.day);
-      
-//       debugPrint("Testing signup with date of birth: $dateOfBirth");
-      
-//       final res = await AuthService.signupIndividual(
-//         username: "rutuja_test",
-//         email: "rutuja@test.com",
-//         password: "password123",
-//         age: 20,
-//         firstName: "Rutuja",
-//         lastName: "Test",
-//         dateOfBirth: dateOfBirth,
-//         city: "Mumbai", // ✅ Added
-//       );
-//       debugPrint("Signup response: $res");
-      
-//       // Show result in a dialog
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text("Signup Result"),
-//           content: SingleChildScrollView(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 const Text("Response:"),
-//                 const SizedBox(height: 10),
-//                 Text(
-//                   res.toString(),
-//                   style: const TextStyle(fontFamily: 'monospace'),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: const Text("OK"),
-//             ),
-//           ],
-//         ),
-//       );
-//     } catch (e) {
-//       debugPrint("Error: $e");
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text("Error"),
-//           content: Text("Signup failed: $e"),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: const Text("OK"),
-//             ),
-//           ],
-//         ),
-//       );
-//     }
-//   }
-
-//   // Test signup without age (backend might calculate from date_of_birth)
-//   Future<void> _testSignupWithoutAge() async {
-//     try {
-//       // Note: This method requires signupIndividualWithoutAge to be defined in AuthService
-//       final now = DateTime.now();
-//       final dateOfBirth = DateTime(now.year - 20, now.month, now.day);
-      
-//       debugPrint("Testing signup without age parameter");
-      
-//       // First try with date string format
-//       final dateString = DateFormat('yyyy-MM-dd').format(dateOfBirth);
-      
-//       debugPrint("Using date string: $dateString");
-      
-//       // If signupIndividualWithoutAge is not defined, use this workaround:
-//       final requestBody = {
-//         "account_type": "individual",
-//         "username": "rutuja_test2",
-//         "email": "rutuja2@test.com",
-//         "password": "password123",
-//         "first_name": "Rutuja",
-//         "last_name": "Test",
-//         "date_of_birth": dateString,
-//         "city": "Mumbai",
-//       };
-      
-//       debugPrint("Sending: $requestBody");
-      
-//       // You would typically call your API here
-//       // For now, show a message
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text("Test Without Age"),
-//           content: const Text("This would send signup without age_group field.\n\nBackend should calculate age from date_of_birth."),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: const Text("OK"),
-//             ),
-//           ],
-//         ),
-//       );
-//     } catch (e) {
-//       debugPrint("Error: $e");
-//     }
-//   }
-
-//   // Test login functionality
-//   Future<void> _testLogin() async {
-//     try {
-//       debugPrint("Testing login functionality");
-      
-//       final res = await AuthService.login(
-//         usernameOrEmail: "rutuja_test",
-//         password: "password123",
-//       );
-      
-//       debugPrint("Login response: $res");
-      
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text("Login Result"),
-//           content: SingleChildScrollView(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 const Text("Response:"),
-//                 const SizedBox(height: 10),
-//                 Text(
-//                   res.toString(),
-//                   style: const TextStyle(fontFamily: 'monospace'),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: const Text("OK"),
-//             ),
-//           ],
-//         ),
-//       );
-//     } catch (e) {
-//       debugPrint("Login error: $e");
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text("Login Error"),
-//           content: Text("Login failed: $e"),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: const Text("OK"),
-//             ),
-//           ],
-//         ),
-//       );
-//     }
-//   }
-
-//   Widget _dot(bool active) {
-//     return Container(
-//       margin: const EdgeInsets.symmetric(horizontal: 4),
-//       width: active ? 16 : 8,
-//       height: 8,
-//       decoration: BoxDecoration(
-//         color: active ? AppColors.primary : Colors.white54,
-//         borderRadius: BorderRadius.circular(10),
-//       ),
-//     );
-//   }
-// }
-

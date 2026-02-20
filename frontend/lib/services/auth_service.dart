@@ -2,30 +2,75 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthService {
+class AuthService extends ChangeNotifier {
   static String get baseUrl {
     if (kIsWeb) {
-      return "http://localhost:8000/api/auth";
+      return "http://127.0.0.1:8000/api/auth";
     }
     return "http://10.0.2.2:8000/api/auth";
   }
+
+  static String get groupBaseUrl {
+    if (kIsWeb) {
+      return "http://127.0.0.1:8000/api/group";
+    }
+    return "http://10.0.2.2:8000/api/group";
+  }
+
   static String? _token;
   static Map<String, dynamic>? _user;
+  
+  static final AuthService _instance = AuthService._internal();
+  factory AuthService() => _instance;
+  AuthService._internal();
 
-  static void setToken(String token) {
+  static Future<void> setToken(String token) async {
     _token = token;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+    _instance.notifyListeners();
   }
 
   static Future<String?> getToken() async {
+    if (_token != null) return _token;
+    final prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('auth_token');
     return _token;
   }
 
-  static void setUser(Map<String, dynamic> user) {
+  static Future<void> setUser(Map<String, dynamic> user) async {
     _user = user;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_user', jsonEncode(user));
+    _instance.notifyListeners();
   }
 
-  static Map<String, dynamic>? get user => _user;
+  Map<String, dynamic>? get user => _user;
+  String? get token => _token;
+  
+  static Map<String, dynamic>? get currentUser => _user;
+  static String? get currentToken => _token;
+  
+  static Future<Map<String, dynamic>?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userStr = prefs.getString('auth_user');
+    if (userStr != null) {
+      _user = jsonDecode(userStr);
+      _instance.notifyListeners();
+    }
+    return _user;
+  }
+
+  static Future<void> logout() async {
+    _token = null;
+    _user = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    await prefs.remove('auth_user');
+    _instance.notifyListeners();
+  }
 
   /// 🔐 Individual Signup
   static Future<Map<String, dynamic>> signupIndividual({
@@ -39,6 +84,7 @@ class AuthService {
     required String language,
     required bool termsAccepted,
     required bool privacyAccepted,
+    String? organizationToken,
   }) async {
     final formattedDate = DateFormat('yyyy-MM-dd').format(dateOfBirth);
     final ageGroup = getAgeGroupFromDOB(dateOfBirth);
@@ -57,6 +103,7 @@ class AuthService {
       "language": language,
       "terms_accepted": termsAccepted,
       "privacy_accepted": privacyAccepted,
+      "organization_token": organizationToken,
     };
 
     try {
@@ -68,8 +115,122 @@ class AuthService {
 
       final data = jsonDecode(response.body);
       if (response.statusCode == 201 && data.containsKey('token')) {
-        setToken(data['token']);
-        setUser(data['user']);
+        await setToken(data['token']);
+        await setUser(data['user']);
+      }
+      return data;
+    } catch (e) {
+      return {"error": "Network error: $e"};
+    }
+  }
+
+  /// 🏢 Organization/Family Signup (Admin)
+  static Future<Map<String, dynamic>> signupOrganization({
+    required String accountType,
+    required String username,
+    required String email,
+    required String password,
+    required String organizationName,
+    required String organizationToken,
+    required String ageGroup,
+    required String language,
+    required bool termsAccepted,
+    required bool privacyAccepted,
+  }) async {
+    final requestBody = {
+      "account_type": accountType,
+      "username": username,
+      "email": email,
+      "password": password,
+      "organization_name": organizationName,
+      "organization_token": organizationToken,
+      "age_group": ageGroup,
+      "language": language,
+      "terms_accepted": termsAccepted,
+      "privacy_accepted": privacyAccepted,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/signup/organization"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(requestBody),
+      );
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 201 && data.containsKey('token')) {
+        await setToken(data['token']);
+        await setUser(data['user']);
+      }
+      return data;
+    } catch (e) {
+      return {"error": "Network error: $e"};
+    }
+  }
+
+  /// 🤝 Join Group
+  static Future<Map<String, dynamic>> joinGroup(String token) async {
+    final authToken = await getToken();
+    try {
+      final response = await http.post(
+        Uri.parse("$groupBaseUrl/join"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $authToken"
+        },
+        body: jsonEncode({"token": token}),
+      );
+      return jsonDecode(response.body);
+    } catch (e) {
+      return {"error": "Network error: $e"};
+    }
+  }
+
+  /// 📊 Get Group Report
+  static Future<Map<String, dynamic>> getGroupReport() async {
+    final authToken = await getToken();
+    try {
+      final response = await http.get(
+        Uri.parse("$groupBaseUrl/report"),
+        headers: {
+          "Authorization": "Bearer $authToken"
+        },
+      );
+      return jsonDecode(response.body);
+    } catch (e) {
+      return {"error": "Network error: $e"};
+    }
+  }
+
+  /// 🏠 Get Joined Group Details
+  static Future<Map<String, dynamic>> getMyGroup() async {
+    final authToken = await getToken();
+    try {
+      final response = await http.get(
+        Uri.parse("$groupBaseUrl/my-group"),
+        headers: {
+          "Authorization": "Bearer $authToken"
+        },
+      );
+      return jsonDecode(response.body);
+    } catch (e) {
+      return {"error": "Network error: $e"};
+    }
+  }
+
+  /// 👤 Get Current User Profile (Refresh Data)
+  static Future<Map<String, dynamic>> getMe() async {
+    final authToken = await getToken();
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/me"),
+        headers: {
+          "Authorization": "Bearer $authToken"
+        },
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        await setUser(data);
       }
       return data;
     } catch (e) {
@@ -94,8 +255,8 @@ class AuthService {
 
       final data = jsonDecode(response.body);
       if (response.statusCode == 200 && data.containsKey('token')) {
-        setToken(data['token']);
-        setUser(data['user']);
+        await setToken(data['token']);
+        await setUser(data['user']);
       }
       return data;
     } catch (e) {

@@ -1,0 +1,12 @@
+﻿Analyzing MentalHealthAI...                                     
+
+warning - Unused import: 'package:flame/events.dart' - lib\game\marble_jar_game.dart:1:8 - unused_import
+   info - The import of 'package:flame/game.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flame/components.dart' - lib\game\marble_jar_game.dart:2:8 - unnecessary_import
+warning - Duplicate import - lib\game\marble_jar_game.dart:9:8 - duplicate_import
+   info - The private field _gravity could be 'final' - lib\game\marble_jar_game.dart:20:11 - prefer_final_fields
+warning - The value of the field '_gravity' isn't used - lib\game\marble_jar_game.dart:20:11 - unused_field
+warning - The value of the local variable 'paint' isn't used - lib\game\marble_jar_game.dart:113:11 - unused_local_variable
+  error - The argument type 'Vector2 Function()' can't be assigned to the parameter type 'Vector2'.  - lib\game\marble_jar_game.dart:201:54 - argument_type_not_assignable
+  error - A value of type 'Vector2 Function()' can't be assigned to a variable of type 'Vector2' - lib\game\marble_jar_game.dart:216:29 - invalid_assignment
+  error - A value of type 'Vector2 Function()' can't be assigned to a variable of type 'Vector2' - lib\game\marble_jar_game.dart:225:29 - invalid_assignment
+

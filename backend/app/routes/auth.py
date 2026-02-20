@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..models import User
 from ..models.services.auth_service import AuthService
 from .. import db
 
@@ -59,6 +61,13 @@ def login():
         return jsonify({'error': str(e)}), 500
 
 @auth_bp.route('/me', methods=['GET'])
+@jwt_required()
 def get_current_user():
-    # This requires JWT authentication - we'll implement this later
-    return jsonify({'message': 'Protected route - implement JWT auth'}), 200
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        return jsonify(user.to_dict()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

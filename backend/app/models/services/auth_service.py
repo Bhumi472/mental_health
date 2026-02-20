@@ -47,6 +47,18 @@ class AuthService:
         if not is_valid_age:
             return None, age_error
         
+        # Validate organization token if provided
+        token_record = None
+        if user_data.get('organization_token'):
+            token_record = OrganizationToken.query.filter_by(
+                token=user_data['organization_token'],
+                is_active=True
+            ).first()
+            if not token_record:
+                return None, "Invalid or expired group token"
+            if token_record.current_members >= token_record.max_members:
+                return None, "Maximum number of members reached for this group"
+
         # Create user
         user = User(
             account_type=user_data['account_type'],
@@ -64,9 +76,14 @@ class AuthService:
             country=user_data['country'],
             address=user_data.get('address'),
             terms_accepted=user_data['terms_accepted'],
-            privacy_accepted=user_data['privacy_accepted']
+            privacy_accepted=user_data['privacy_accepted'],
+            organization_token=user_data.get('organization_token')
         )
         
+        if token_record:
+            token_record.current_members += 1
+            db.session.add(token_record)
+
         db.session.add(user)
         db.session.commit()
         
@@ -81,7 +98,8 @@ class AuthService:
     
     @staticmethod
     def register_organization(user_data: dict, db):
-        # Validate required fields
+        # This method is now used for both Org Admin and Family Admin registration
+        # since they both create a token
         required_fields = ['account_type', 'age_group', 'email', 'username', 'password',
                           'organization_token', 'organization_name']
         
@@ -92,22 +110,6 @@ class AuthService:
         # Check terms
         if not user_data.get('terms_accepted') or not user_data.get('privacy_accepted'):
             return None, "You must accept terms and conditions and privacy policy"
-        
-        # Validate organization token
-        token_record = OrganizationToken.query.filter_by(
-            token=user_data['organization_token'],
-            account_type=user_data['account_type'],
-            is_active=True
-        ).first()
-        
-        if not token_record:
-            return None, "Invalid or expired organization token"
-        
-        if token_record.expires_at and token_record.expires_at < datetime.utcnow():
-            return None, "Organization token has expired"
-        
-        if token_record.current_members >= token_record.max_members:
-            return None, "Maximum number of members reached"
         
         # Validate email and username
         is_valid_email, email_error = validate_email(user_data['email'])
@@ -126,6 +128,11 @@ class AuthService:
         if existing_user:
             return None, "Email or username already exists"
         
+        # Check if token already exists
+        existing_token = OrganizationToken.query.filter_by(token=user_data['organization_token']).first()
+        if existing_token:
+            return None, "This token is already in use. Please choose another one."
+
         # Create user
         user = User(
             account_type=user_data['account_type'],
@@ -135,16 +142,25 @@ class AuthService:
             username=user_data['username'],
             email=user_data['email'],
             password_hash=hash_password(user_data['password']),
-            organization_name=user_data['organization_name'],
+            organization_name=user_data['organization_name'] if user_data['account_type'] == 'organization' else None,
+            family_name=user_data['organization_name'] if user_data['account_type'] == 'family' else None,
             terms_accepted=user_data['terms_accepted'],
             privacy_accepted=user_data['privacy_accepted']
         )
         
-        # Update token member count
-        token_record.current_members += 1
-        
         db.session.add(user)
-        db.session.add(token_record)
+        db.session.flush() # Get user id
+
+        # Create the token record
+        new_token = OrganizationToken(
+            token=user_data['organization_token'],
+            account_type=user_data['account_type'],
+            created_by=user.id,
+            organization_name=user_data['organization_name'],
+            max_members=50 if user_data['account_type'] == 'organization' else 10
+        )
+        
+        db.session.add(new_token)
         db.session.commit()
         
         # Create JWT token

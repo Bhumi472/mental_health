@@ -77,8 +77,8 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
             ),
             const SizedBox(height: 30),
             _buildTypeCard(
-              title: lp.translate('org'),
-              subtitle: "For workplace mental health",
+              title: "${lp.translate('org')} Admin",
+              subtitle: "Manage workplace mental health",
               icon: Icons.business,
               type: "organization",
               selectedType: selectedType,
@@ -86,8 +86,8 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
             ),
             const SizedBox(height: 16),
             _buildTypeCard(
-              title: lp.translate('fam'),
-              subtitle: "Family wellness plan",
+              title: "${lp.translate('fam')} Admin",
+              subtitle: "Manage family wellness plan",
               icon: Icons.family_restroom,
               type: "family",
               selectedType: selectedType,
