@@ -48,6 +48,10 @@ dependencies:
   video_player: ^2.8.2
   confetti: ^0.8.0
   fl_chart: ^0.70.2
+  printing: ^5.12.0      # for PDF generation
+pdf: ^3.10.7           # optional – for full PDF creation
+fl_chart: ^0.70.2      # optional – if you want charts later
+  
 
 dev_dependencies:
   flutter_test:

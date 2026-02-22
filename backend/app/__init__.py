@@ -24,6 +24,8 @@ def create_app(config_class=Config):
     from app.routes.community_routes import community_bp
     from app.routes.popslash import popslash_bp
     from app.routes.memorylane import memorylane_bp
+    from app.routes.mental_health_routes import mental_health_bp
+
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(assessment_bp, url_prefix='/api/assessment')
@@ -32,6 +34,7 @@ def create_app(config_class=Config):
     app.register_blueprint(community_bp, url_prefix='/api/community')
     app.register_blueprint(popslash_bp, url_prefix='/api/games/popslash')
     app.register_blueprint(memorylane_bp, url_prefix='/api/games/memorylane')
+    app.register_blueprint(mental_health_bp, url_prefix='/api/mental')
     
     @app.route('/')
     def index():

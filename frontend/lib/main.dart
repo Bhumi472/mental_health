@@ -28,6 +28,7 @@ import 'screens/games/games_page.dart';
 import 'screens/community/community_page.dart';
 import 'screens/group_report_screen.dart';
 import 'screens/my_group_screen.dart';
+import 'screens/assessment_screen.dart';   // <-- NEW IMPORT for My Report
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,6 +84,8 @@ class MyApp extends StatelessWidget {
         '/games': (context) => const GamesPage(),
         '/group-report': (context) => const GroupReportScreen(),
         '/my-group': (context) => const MyGroupScreen(),
+        // NEW ROUTE for My Report
+        '/assessment': (context) => const AssessmentScreen(),
       },
     );
   }

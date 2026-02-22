@@ -1,0 +1,20 @@
+id,name,specialization,clinic_name,address,city,phone,email,available_days
+1,हर्शल भटजी,Therapist,Grupo Saez S.L. Clinic,"4 मधु महरा
+जिलोंपर 401538",Cape Town,14719950491,smarie@example.net,"['Fri', 'Sat', 'Wed', 'Mon']"
+2,Sandra Hood,Psychiatrist,Bouvier Clinic,"7/3 कम्बोज जोशी
+अजमेर 353530",Paris,+34978 43 57 43,weiyang@example.com,"['Tue', 'Fri', 'Wed', 'Sat']"
+3,Allen Rodriguez,Psychiatrist,कलिता PLC Clinic,"164 अहलूवालिया
+मोतिहारी-192955",Sydney,377-432-1846x3610,taaraa41@example.net,"['Wed', 'Fri', 'Thu', 'Mon']"
+4,周亮,Therapist,Construcción Quevedo y asociados S.L.L. Clinic,"39, chemin de Perrier
+94753 Giraud-sur-Mer",Paris,13621025257,fritschoda@example.net,"['Mon', 'Thu', 'Fri', 'Tue']"
+5,Nicolai Kaul,Counselor,飞利信网络有限公司 Clinic,"9, boulevard Ramos
+09803 Lebreton-sur-Mer",Berlin,(04457) 958076,muellerjanina@example.org,"['Mon', 'Fri', 'Sat', 'Tue']"
+6,Jenny Rovira Ferrando,Psychiatrist,"चौहान, त्रिवेदी and मल्होत्रा Clinic","Heinz-Dieter-Dussen van-Ring 885
+73852 München",Mumbai,15382608365,kornelia59@example.org,"['Thu', 'Sat', 'Wed', 'Fri']"
+7,Marco Santos Guardiola Zabaleta,Counselor,Servicios Roman y asociados S.A.T. Clinic,"Plaza de Macario Sanz 29 Piso 3 
+Soria, 46410",New York,18893773248,xmichel@example.org,"['Thu', 'Tue', 'Sat', 'Mon']"
+8,Gabriel Dias,Clinical Psychologist,快讯信息有限公司 Clinic,浙江省红县西峰六盘水街D座 674223,Cape Town,+34803 41 25 04,vivek98@example.org,"['Fri', 'Thu', 'Sat', 'Mon']"
+9,Reimar Ruppersberger-Mielcarek,Counselor,"रॉय, घोष and गोयल Clinic","6, boulevard Jacquet
+97196 Leroux",New York,0643547067,li21@example.com,"['Sat', 'Thu', 'Tue', 'Mon']"
+10,Luc Guibert,Therapist,鑫博腾飞网络有限公司 Clinic,"037 Stanley Crossroad Suite 005
+Johnstad, AS 98984",Berlin,7189274408,rjacob@example.net,"['Mon', 'Tue', 'Fri', 'Sat']"

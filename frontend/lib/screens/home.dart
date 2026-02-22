@@ -9,8 +9,9 @@ import 'activities.dart';
 import 'community.dart';
 import 'profile_screen.dart';
 import 'tests.dart';
-import 'journal.dart'; 
+import 'journal.dart';
 import 'ai_chat_screen.dart';
+import 'assessment_screen.dart';          // <-- NEW IMPORT
 
 import 'package:provider/provider.dart';
 import '../services/theme_service.dart';
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     QuickAccessTab(
         icon: Icons.games_outlined,
         label: "Games",
-        imagePath: 'assets/images/Games.png', // Capitalized G
+        imagePath: 'assets/images/Games.png',
         path: "/games",
         gradient: AppGradients.games),
     QuickAccessTab(
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         icon: Icons.dashboard_outlined,
         label: "Dashboard",
         imagePath: 'assets/images/Reports.png',
-        path: "/reports", // Changed from /profile
+        path: "/reports",
         gradient: AppGradients.reports),
     QuickAccessTab(
         icon: Icons.book_outlined,
@@ -79,9 +80,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     QuickAccessTab(
         icon: Icons.medical_services_outlined,
         label: "Consult",
-        imagePath: 'assets/images/consult.png', // Lowercase c
+        imagePath: 'assets/images/consult.png',
         path: "/consult",
         gradient: AppGradients.consult),
+    // NEW TAB – My Report
+    QuickAccessTab(
+        icon: Icons.health_and_safety_outlined,
+        label: "My Report",
+        imagePath: 'assets/images/Reports.png',
+        path: "/assessment",
+        gradient: AppGradients.reports),
   ];
 
   List<MarbleData> collectedMarbles = [];
@@ -89,22 +97,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   String get userName {
     final user = AuthService.currentUser;
     if (user == null) return "User";
-    
+
     // 1. Try first name (Individual)
     final firstName = user['first_name'];
     if (firstName != null && firstName.toString().trim().isNotEmpty) return firstName.toString().trim();
-    
+
     // 2. Try organization/family name (Admin)
     final orgName = user['organization_name'];
     if (orgName != null && orgName.toString().trim().isNotEmpty) return orgName.toString().trim();
-    
+
     final famName = user['family_name'];
     if (famName != null && famName.toString().trim().isNotEmpty) return famName.toString().trim();
-    
+
     // 3. Try username (Fallback)
     final username = user['username'];
     if (username != null && username.toString().trim().isNotEmpty) return username.toString().trim();
-    
+
     return "User";
   }
 
@@ -125,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final hasGroup = orgToken.isNotEmpty && orgToken != "null";
 
     List<QuickAccessTab> tabs = List.from(quickAccessTabs);
-    
+
     // Add "My Group" for individuals who have joined one
     if (userType == 'individual' && hasGroup) {
       tabs.insert(tabs.length - 1, const QuickAccessTab(
@@ -136,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         gradient: AppGradients.community,
       ));
     }
-    
+
     // Add "Group Report" for admins
     if (userType == 'family' || userType == 'organization') {
       tabs.insert(tabs.length - 1, const QuickAccessTab(
@@ -147,10 +155,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         gradient: AppGradients.reports,
       ));
     }
-    
+
     return tabs;
   }
-  
+
   static const int maxMarbles = 50;
 
   @override
@@ -182,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<MarbleData> _generatePastMarbles() {
     final marbles = <MarbleData>[];
     final today = DateTime.now();
-    final random = math.Random(); 
+    final random = math.Random();
     final moods = Mood.all;
 
     for (int i = 0; i < 15; i++) {
@@ -242,11 +250,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               );
 
               final result = await AuthService.joinGroup(token);
-              
+
               if (mounted) {
                 // Pop loading
                 Navigator.pop(context);
-                
+
                 if (result.containsKey('error')) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(result['error']), backgroundColor: Colors.red),
@@ -334,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         );
       }
     }
-    
+
     if (collectedMarbles.length >= maxMarbles) {
       Future.delayed(const Duration(milliseconds: 500), _showJarFullDialog);
     }
@@ -383,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       "May your day be as bright as your smile!",
       "You've got this! Keep that positive energy flowing."
     ];
-    
+
     final quote = quotes[random.nextInt(quotes.length)];
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -397,7 +405,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _showJarFullDialog() {
-      showDialog(
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Jar Full!'),
@@ -438,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final List<Widget> pages = [
       _buildHomeContent(context), // Pass context
       TestsPage(),
-      const JournalPage(), 
+      const JournalPage(),
       const ProfileScreen(),
     ];
 
@@ -451,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         key: _scaffoldKey,
         drawer: _buildDrawer(context),
         body: pages[_selectedIndex],
-        floatingActionButton: _selectedIndex == 0 
+        floatingActionButton: _selectedIndex == 0
             ? FloatingActionButton(
                 onPressed: () {
                   Navigator.push(
@@ -502,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildDrawer(BuildContext context) {
     final theme = Theme.of(context);
     final themeService = Provider.of<ThemeService>(context, listen: false);
-    
+
     return Drawer(
       child: Container(
         color: theme.scaffoldBackgroundColor,
@@ -573,6 +581,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
+
   Widget _buildHomeContent(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -618,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         _buildMoodJarSection(context),
                         const SizedBox(height: 24),
                         _buildQuickAccess(context),
-                        const SizedBox(height: 20), 
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -683,7 +692,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(builder: (context) => const ProfileScreen()),
                   );
-                }, 
+                },
                 child: CircleAvatar(
                   backgroundColor: theme.colorScheme.primary.withAlpha(50),
                   child: Text(
@@ -736,7 +745,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-
   Widget _buildGreeting(BuildContext context) {
     final theme = Theme.of(context);
     final user = AuthService.currentUser;
@@ -758,7 +766,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         const SizedBox(height: 8),
         if (showAssessmentBanner) _buildAssessmentBanner(),
         const SizedBox(height: 16),
-        
+
         // Buttons based on user type
         if (userType == 'individual') ...[
           HoverButton(
@@ -804,13 +812,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             onReport: _addToReport,
           ),
         ),
-         const SizedBox(height: 16),
-          HoverButton(
-            onPressed: () => Navigator.pushNamed(context, '/tests'),
-           label: "Take a Mental Health Test",
-           icon: Icons.assignment_outlined,
-           gradient: AppGradients.ocean,
-         ),
+        const SizedBox(height: 16),
+        HoverButton(
+          onPressed: () => Navigator.pushNamed(context, '/tests'),
+          label: "Take a Mental Health Test",
+          icon: Icons.assignment_outlined,
+          gradient: AppGradients.ocean,
+        ),
       ],
     );
   }
@@ -849,7 +857,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 }
 
-
 class HoverButton extends StatefulWidget {
   final VoidCallback onPressed;
   final String label;
@@ -882,41 +889,40 @@ class _HoverButtonState extends State<HoverButton> {
           scale: _isHovered ? 1.05 : 1.0,
           duration: const Duration(milliseconds: 200),
           child: Container(
-             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-             decoration: BoxDecoration(
-               gradient: widget.gradient,
-               borderRadius: BorderRadius.circular(12),
-               boxShadow: [
-                 if (_isHovered)
-                   BoxShadow(
-                     color: Colors.blue.withValues(alpha: 0.3),
-                     blurRadius: 12,
-                     offset: const Offset(0, 4),
-                   ),
-               ],
-             ),
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-                 Icon(widget.icon, color: Colors.white),
-                 const SizedBox(width: 8),
-                 Text(
-                   widget.label,
-                   style: const TextStyle(
-                     color: Colors.white,
-                     fontWeight: FontWeight.w600,
-                     fontSize: 16,
-                   ),
-                 ),
-               ],
-             ),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              gradient: widget.gradient,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                if (_isHovered)
+                  BoxShadow(
+                    color: Colors.blue.withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(widget.icon, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  widget.label,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
 
 class _QuickAccessCard extends StatefulWidget {
   final QuickAccessTab tab;
@@ -932,7 +938,7 @@ class _QuickAccessCardState extends State<_QuickAccessCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -946,7 +952,7 @@ class _QuickAccessCardState extends State<_QuickAccessCard> {
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
-                 BoxShadow(
+                BoxShadow(
                   color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
@@ -959,15 +965,15 @@ class _QuickAccessCardState extends State<_QuickAccessCard> {
                 Expanded(
                   child: Container(
                     margin: const EdgeInsets.all(8),
-                    padding: widget.tab.label == "Dashboard" 
+                    padding: widget.tab.label == "Dashboard"
                         ? const EdgeInsets.all(28)
-                        : const EdgeInsets.all(20), 
+                        : const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: widget.tab.gradient,
                     ),
                     child: Center(
-                      child: Image.asset(widget.tab.imagePath, fit: BoxFit.contain), 
+                      child: Image.asset(widget.tab.imagePath, fit: BoxFit.contain),
                     ),
                   ),
                 ),

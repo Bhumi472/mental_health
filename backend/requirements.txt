@@ -7,3 +7,10 @@ python-dotenv==1.0.0
 pydantic==2.5.0
 email-validator==2.1.0
 Werkzeug==3.0.1
+influxdb-client
+pandas
+numpy
+textblob
+scikit-learn
+python-dotenv
+Faker
